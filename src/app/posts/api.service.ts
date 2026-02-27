@@ -26,6 +26,12 @@ export class ApiService {
       { name }
     );
   }
+  updateOrganizacion(id: string, name: string) {
+  return this.http.patch(
+    `${this.baseUrl}/organizaciones/update/${id}`,
+    { name }
+  );
+}
 
   // USUARIOS
   getUsuarios(): Observable<{ usuario: Usuario[] }> {
@@ -40,4 +46,10 @@ export class ApiService {
       { name, organizacion }
     );
   }
+  updateUsuario(id: string, name: string, organizacion: string) {
+  return this.http.patch(
+    `${this.baseUrl}/usuarios/update/${id}`,
+    { name, organizacion }
+  );
+}
 }
