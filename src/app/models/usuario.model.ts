@@ -1,7 +1,9 @@
+import { Organizacion } from './organizacion.model';
+
 export interface Usuario {
   _id: string;
   name: string;
-  organizacion: Usuario | string;
+  organizacion: Organizacion | string;
   createdAt?: string;
   updatedAt?: string;
 }

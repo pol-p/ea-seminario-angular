@@ -1,7 +1,17 @@
-<h2>Lista de Organizaciones</h2>
+<h2>Organizaciones</h2>
 
-<ul>
-  <li *ngFor="let org of organizaciones">
-    {{ org.name }}
+<p *ngIf="loading">Cargando...</p>
+<p *ngIf="!loading && errorMsg">{{ errorMsg }}</p>
+
+<ul class="list" *ngIf="!loading && !errorMsg && organizaciones.length > 0">
+  <li class="card" *ngFor="let org of organizaciones; trackBy: trackById">
+    <span class="name">{{ org.name }}</span>
+    <span class="muted">{{ org._id }}</span>
   </li>
 </ul>
+
+<p *ngIf="!loading && !errorMsg && organizaciones.length === 0">
+  No hay organizaciones.
+</p>
+
+<button type="button" class="btn" (click)="load()">Recargar</button>

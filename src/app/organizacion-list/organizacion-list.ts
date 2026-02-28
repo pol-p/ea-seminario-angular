@@ -5,30 +5,39 @@ import { Organizacion } from '../models/organizacion.model';
 
 @Component({
   selector: 'app-organizacion-list',
-  imports: [CommonModule],
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './organizacion-list.html',
-  styleUrl: './organizacion-list.css',
+  styleUrls: ['./organizacion-list.css'],
 })
-
 export class OrganizacionList implements OnInit {
-
   organizaciones: Organizacion[] = [];
+  loading = false;
+  errorMsg = '';
 
   constructor(private api: ApiService) {}
-editOrganizacion(org: Organizacion) {
-  const nuevoNombre = prompt('Nuevo nombre:', org.name);
 
-  if (nuevoNombre && nuevoNombre.trim() !== '') {
-    this.api.updateOrganizacion(org._id, nuevoNombre)
-      .subscribe(() => {
-        org.name = nuevoNombre; // actualizar vista
-      });
-  }
-}
   ngOnInit(): void {
-    this.api.getOrganizaciones().subscribe(data => {
-      this.organizaciones = data.organizaciones;
+    this.load();
+  }
+
+  load(): void {
+    this.loading = true;
+    this.errorMsg = '';
+
+    this.api.getOrganizaciones().subscribe({
+      next: (res) => {
+        this.organizaciones = res?.organizaciones ?? [];
+        this.loading = false;
+      },
+      error: () => {
+        this.errorMsg = 'No se han podido cargar las organizaciones.';
+        this.loading = false;
+      },
     });
+  }
+
+  trackById(_index: number, org: Organizacion): string {
+    return org._id;
   }
 }
