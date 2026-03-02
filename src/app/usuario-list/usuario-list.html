@@ -39,8 +39,26 @@
     <input type="text" formControlName="name" />
 
     <button type="submit" class="btn" [disabled]="usuarioForm.invalid">Guardar</button>
+   
 
   </form>
+  <ul *ngIf="!loading && !errorMsg && usuarios.length > 0">
+  <li *ngFor="let u of usuarios; trackBy: trackById">
+
+    <div>
+      {{ u.name }}
+    </div>
+
+    <button type="button"
+            class="btn"
+            (click)="editar(u)">
+      Editar
+    </button>
+
+  </li>
+</ul>
 
 </div>
 <button type="button" class="btn" (click)="load()">Recargar</button>
+
+  

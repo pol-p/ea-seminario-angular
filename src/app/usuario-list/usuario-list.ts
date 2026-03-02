@@ -21,6 +21,8 @@ export class UsuarioList implements OnInit {
   errorMsg = '';
   mostrarForm = false;
   usuarioForm!: FormGroup;
+  editando = false;
+  usuarioEditId: string | null = null;
 
   constructor(private api: ApiService, private fb: FormBuilder, private cdr: ChangeDetectorRef, private dialog: MatDialog) {
     this.usuarioForm = this.fb.group({
@@ -77,25 +79,42 @@ loadOrganizaciones(): void {
 }
 
 guardar(): void {
+
   if (this.usuarioForm.invalid) return;
 
-  const payload = {
-    name: this.usuarioForm.value.name,
-    organizacion: this.usuarioForm.value.organizacion 
-  };
-  this.api.createUsuario(payload.name, payload.organizacion).subscribe({
-    next: () => {
-      this.mostrarForm = false;
-      this.usuarioForm.reset();
-      this.load();
-    },
-    error: (err) => {
-      console.error('Error backend:', err.error);
-      this.errorMsg = 'No se ha podido crear el usuario.';
-    }
-  });
-}
+  const { name, organizacion } = this.usuarioForm.value;
 
+  if (this.editando && this.usuarioEditId) {
+
+    // UPDATE
+    this.api.updateUsuario(this.usuarioEditId, name, organizacion)
+      .subscribe({
+        next: () => {
+          this.resetForm();
+          this.load();
+        },
+        error: (err) => {
+          console.error(err);
+          this.errorMsg = 'No se ha podido actualizar el usuario.';
+        }
+      });
+
+  } else {
+
+    // CREATE
+    this.api.createUsuario(name, organizacion)
+      .subscribe({
+        next: () => {
+          this.resetForm();
+          this.load();
+        },
+        error: (err) => {
+          console.error(err);
+          this.errorMsg = 'No se ha podido crear el usuario.';
+        }
+      });
+  }
+}
   confirmDelete(id: string, name: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: name
@@ -107,6 +126,24 @@ guardar(): void {
       }
     });
   }
+editar(user: Usuario): void {
+  this.mostrarForm = true;
+  this.editando = true;
+  this.usuarioEditId = user._id;
+
+  this.usuarioForm.patchValue({
+    name: user.name,
+    organizacion: typeof user.organizacion === 'string'
+      ? user.organizacion
+      : (user.organizacion as Organizacion)?._id
+  });
+}
+resetForm(): void {
+  this.mostrarForm = false;
+  this.editando = false;
+  this.usuarioEditId = null;
+  this.usuarioForm.reset();
+}
 
   delete(id: string): void {
     this.errorMsg = '';

@@ -21,6 +21,8 @@ export class OrganizacionList implements OnInit {
   // Variable para controlar la visibilidad del formulario
   mostrarForm = false;
   organizacionForm!: FormGroup;
+  editando = false;
+organizacionEditId: string | null = null;
 
   constructor(private api: ApiService, private fb: FormBuilder, private cdr: ChangeDetectorRef, private dialog: MatDialog) {
     this.organizacionForm = this.fb.group({
@@ -60,25 +62,75 @@ export class OrganizacionList implements OnInit {
   mostrarFormulario(): void {
   this.mostrarForm = true;
 }
+editar(org: Organizacion): void {
+  this.mostrarForm = true;
+  this.editando = true;
+  this.organizacionEditId = org._id;
 
-guardar(): void {
-  if (this.organizacionForm.invalid) return;
-
-  this.loading = true;
-  this.errorMsg = '';
-
-  this.api.createOrganizacion(this.organizacionForm.value.nombre).subscribe({
-    next: () => {
-      this.mostrarForm = false;
-      this.organizacionForm.reset();
-      this.load();
-    },
-    error: () => {
-      this.errorMsg = 'No se ha podido crear la organización.';
-    }
+  this.organizacionForm.patchValue({
+    nombre: org.name
   });
 }
 
+
+guardar(): void {
+
+  if (this.organizacionForm.invalid) return;
+
+  const nombre = this.organizacionForm.value.nombre;
+
+  if (this.editando && this.organizacionEditId) {
+
+    // UPDATE
+    this.api.updateOrganizacion(this.organizacionEditId, nombre)
+      .subscribe({
+        next: () => {
+          this.resetForm();
+          this.load();
+        },
+        error: () => {
+          this.errorMsg = 'No se ha podido actualizar la organización.';
+        }
+      });
+
+  } else {
+
+    // CREATE
+    this.api.createOrganizacion(nombre)
+      .subscribe({
+        next: () => {
+          this.resetForm();
+          this.load();
+        },
+        error: () => {
+          this.errorMsg = 'No se ha podido crear la organización.';
+        }
+      });
+  }
+}
+resetForm(): void {
+  this.mostrarForm = false;
+  this.editando = false;
+  this.organizacionEditId = null;
+  this.organizacionForm.reset();
+}
+
+//Update: editar nombre de la organización
+editOrganizacion(org: Organizacion) {
+
+  const nuevoNombre = prompt('Nuevo nombre:', org.name);
+
+  if (nuevoNombre && nuevoNombre.trim() !== '') {
+
+    this.api.updateOrganizacion(org._id, nuevoNombre)
+      .subscribe(() => {
+
+        // actualizar vista sin recargar
+        org.name = nuevoNombre;
+
+      });
+  }
+}
   confirmDelete(id: string, name?: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: name
