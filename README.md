@@ -2,6 +2,53 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
 
+## Structure
+
+```
+src/
+├── environments/
+│   └── environment.ts
+│
+└── app/
+    ├── app.ts
+    ├── app.spec.ts
+    ├── app.config.ts
+    ├── app.config.server.ts
+    ├── app.html
+    ├── app.css
+    ├── app.routes.ts
+    ├── app.routes.server.ts
+    │
+    ├── models/
+    │   ├── organizacion.model.ts
+    │   └── usuario.model.ts
+    │
+    ├── services/
+    │   ├── organizacion.service.ts
+    │   ├── organizacion.spec.ts
+    │   ├── usuario.service.ts
+    │   └── usuario.spec.ts
+    │
+    ├── organizacion-list/
+    │   ├── organizacion-list.ts
+    │   ├── organizacion-list.html
+    │   ├── organizacion-list.css
+    │   └── organizacion-list.spec.ts
+    │
+    ├── usuario-list/
+    │   ├── usuario-list.ts
+    │   ├── usuario-list.html
+    │   └── usuario-list.css
+    │
+    └── confirm-dialog/
+        ├── organizacion-list.ts
+        ├── organizacion-list.html
+        ├── organizacion-list.css
+        └── organizacion-list.spec.ts
+```
+
+---
+
 ## Development server
 
 To start a local development server, run:
@@ -18,6 +65,24 @@ Angular CLI includes powerful code scaffolding tools. To generate a new componen
 
 ```bash
 ng generate component component-name
+```
+
+To generate a new interface (models), run:
+
+```bash
+ng generate interface interface-name
+```
+
+To generate a new service, run:
+
+```bash
+ng generate service service-name
+```
+
+To generate a new pipe, run:
+
+```bash
+ng generate pipe pipe-name
 ```
 
 For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
