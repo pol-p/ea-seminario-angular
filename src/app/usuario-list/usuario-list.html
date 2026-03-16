@@ -1,11 +1,7 @@
 <h2>Usuarios</h2>
 
 <!-- Buscador: buscar por nombre -->
-<p> <input
-  type="text"
-  [formControl]="searchControl"
-  placeholder="Buscar por nombre..."
-/> </p>
+<p> <input type="text" [formControl]="searchControl" placeholder="Buscar por nombre..." /> </p>
 
 <!-- Mensajes de estado -->
 <p *ngIf="loading">Cargando...</p>
@@ -16,7 +12,8 @@
 </p>
 
 <!-- Botón para mostrar formulario de nuevo usuario -->
-<button *ngIf="!mostrarForm" type="button" class="btn" (click)="mostrarFormulario()" style="margin-bottom: 15px;">Añadir Nuevo Usuario</button>
+<button *ngIf="!mostrarForm" type="button" class="btn" (click)="mostrarFormulario()" style="margin-bottom: 15px;">Añadir
+  Nuevo Usuario</button>
 
 <!-- Formulario para crear o editar usuario -->
 <div *ngIf="mostrarForm" class="card">
@@ -25,11 +22,11 @@
   <h3>{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}</h3>
 
   <form [formGroup]="usuarioForm" (ngSubmit)="guardar()">
-    
+
     <!-- Campo de selección de organización -->
     <div style="margin-bottom: 10px;">
       <label>Organización:</label>
-      <select formControlName="organizacion" style="width: 100%; padding: 5px;">
+      <select formControlName="organization" style="width: 100%; padding: 5px;">
         <option value="" disabled selected>Selecciona una organización</option>
         <option *ngFor="let o of organizaciones" [value]="o._id">{{ o.name }}</option>
       </select>
@@ -45,7 +42,8 @@
     <div style="margin-bottom: 10px;">
       <label>Email:</label>
       <input type="email" formControlName="email" style="width: 100%; padding: 5px;" />
-      <small style="color: red;" *ngIf="usuarioForm.get('email')?.hasError('email') && usuarioForm.get('email')?.touched">
+      <small style="color: red;"
+        *ngIf="usuarioForm.get('email')?.hasError('email') && usuarioForm.get('email')?.touched">
         Formato de email inválido.
       </small>
     </div>
@@ -54,7 +52,8 @@
     <div style="margin-bottom: 10px;">
       <label>Contraseña:</label>
       <input type="password" formControlName="password" style="width: 100%; padding: 5px;" />
-      <small style="color: red;" *ngIf="usuarioForm.get('password')?.hasError('minlength') && usuarioForm.get('password')?.touched">
+      <small style="color: red;"
+        *ngIf="usuarioForm.get('password')?.hasError('minlength') && usuarioForm.get('password')?.touched">
         La contraseña debe tener al menos 6 caracteres.
       </small>
     </div>
@@ -63,7 +62,8 @@
     <div style="margin-bottom: 15px;">
       <label>Repetir contraseña:</label>
       <input type="password" formControlName="confirmPassword" style="width: 100%; padding: 5px;" />
-      <small style="color: red;" *ngIf="usuarioForm.hasError('passwordMismatch') && usuarioForm.get('confirmPassword')?.touched">
+      <small style="color: red;"
+        *ngIf="usuarioForm.hasError('passwordMismatch') && usuarioForm.get('confirmPassword')?.touched">
         Las contraseñas no coinciden.
       </small>
     </div>
@@ -81,7 +81,7 @@
 <!-- Tabla de usuarios -->
 <div *ngIf="!loading && !errorMsg && usuariosVisibles.length > 0">
   <table style="width: 100%; text-align: left; margin-top: 20px; border-collapse: collapse;">
-    
+
     <!-- Encabezado de la tabla -->
     <thead>
       <tr style="border-bottom: 1px solid #ccc;">
@@ -97,7 +97,8 @@
       <tr *ngFor="let u of usuariosVisibles" style="border-bottom: 1px solid #eee;">
         <td style="padding: 8px 0;">{{ u.name }}</td>
         <td>{{ u.email }}</td>
-        <td>{{ organizacionLabel(u) }}</td> <td>
+        <td>{{ organizacionLabel(u) }}</td>
+        <td>
           <button (click)="editar(u)">Editar</button>
           <button (click)="confirmDelete(u._id, u.name)">Borrar</button>
         </td>
@@ -109,18 +110,11 @@
 <div style="margin-top: 10px;">
 
   <!-- Botones para mostrar más/menos usuarios si supera el limite -->
-  <button 
-    *ngIf="!mostrarTodosUsuarios && usuariosFiltrados.length > limite"
-    class="btn"
-    (click)="mostrarMas()">
+  <button *ngIf="!mostrarTodosUsuarios && usuariosFiltrados.length > limite" class="btn" (click)="mostrarMas()">
     Mostrar más
   </button>
 
-  <button 
-    *ngIf="mostrarTodosUsuarios"
-    class="btn"
-    (click)="mostrarTodosUsuarios = false"
-    style="margin-left: 10px;">
+  <button *ngIf="mostrarTodosUsuarios" class="btn" (click)="mostrarTodosUsuarios = false" style="margin-left: 10px;">
     Mostrar menos
   </button>
 </div>

@@ -1,0 +1,53 @@
+.container {
+  padding: 20px;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #f0f0f0;
+}
+
+.delete-btn {
+  color: #d32f2f;
+  border-color: #ffcdd2;
+}
+
+.muted {
+  color: #777;
+  font-size: 0.9em;
+}

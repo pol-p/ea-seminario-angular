@@ -36,7 +36,7 @@ export class UsuarioList implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
-      organizacion: ['', Validators.required],
+      organization: [''],
     });
 
     this.searchControl = new FormControl('');
@@ -60,10 +60,10 @@ export class UsuarioList implements OnInit {
   ngOnInit(): void {
     this.load();
     this.loadOrganizaciones();
-    
+
     this.searchControl.valueChanges.subscribe(value => {
       const term = value?.toLowerCase() ?? '';
-  
+
       this.usuariosFiltrados = this.usuarios.filter(org =>
         org.name.toLowerCase().includes(term)
       );
@@ -98,32 +98,32 @@ export class UsuarioList implements OnInit {
 
   //Función: obtener nombre de organización para mostrar en la tabla
   organizacionLabel(u: Usuario): string {
-    const org = u.organizacion;
+    const org = u.organization;
     if (!org) return '-';
-    if (typeof org === 'string') return org; 
+    if (typeof org === 'string') return org;
     return (org as Organizacion).name ?? '-';
   }
 
   //Función: mostrar formulario
-   mostrarFormulario(): void {
-  this.mostrarForm = true;
-}
+  mostrarFormulario(): void {
+    this.mostrarForm = true;
+  }
 
-//Función: cargar organizaciones para el select del formulario
-loadOrganizaciones(): void {
-  this.api.getOrganizaciones().subscribe({
-    next: (res) => {
-      this.organizaciones = res;
-      console.log('Organizaciones:', this.organizaciones);
-    },
-    error: (err) => console.error(err)
-  });
-}
+  //Función: cargar organizaciones para el select del formulario
+  loadOrganizaciones(): void {
+    this.api.getOrganizaciones().subscribe({
+      next: (res) => {
+        this.organizaciones = res;
+        console.log('Organizaciones:', this.organizaciones);
+      },
+      error: (err) => console.error(err)
+    });
+  }
 
-//Función: mostrar más
+  //Función: mostrar más
   mostrarMas(): void {
-  this.mostrarTodosUsuarios = true;
-  } 
+    this.mostrarTodosUsuarios = true;
+  }
 
   get usuariosVisibles(): Usuario[] {
     if (this.mostrarTodosUsuarios) {
@@ -131,51 +131,51 @@ loadOrganizaciones(): void {
     }
     return this.usuariosFiltrados.slice(0, this.limite);
   }
-  
+
   //Función: guardar (tanto para crear como para actualizar)
-guardar(): void {
-  
-  if (this.usuarioForm.invalid) return;
+  guardar(): void {
 
-  const { name, email, password, organizacion } = this.usuarioForm.value;
+    if (this.usuarioForm.invalid) return;
 
-  if (this.editando && this.usuarioEditId) {
-    // UPDATE: pasamos id, name, email, password, organizacion
-    this.api.updateUsuario(this.usuarioEditId, name, email, password, organizacion)
-      .subscribe({
-        next: () => {
-          this.resetForm();
-          this.load();
-        },
-        error: (err) => {
-          console.error(err);
-          this.errorMsg = 'No se ha podido actualizar el usuario.';
-        }
-      });
+    const { name, email, password, organization } = this.usuarioForm.value;
 
-  } else {
+    if (this.editando && this.usuarioEditId) {
+      // UPDATE: pasamos id, name, email, password, organization
+      this.api.updateUsuario(this.usuarioEditId, name, email, password, organization)
+        .subscribe({
+          next: () => {
+            this.resetForm();
+            this.load();
+          },
+          error: (err) => {
+            console.error(err);
+            this.errorMsg = 'No se ha podido actualizar el usuario.';
+          }
+        });
 
-    // CREATE: pasamos name, email, password, organizacion
-    this.api.createUsuario(name, email, password, organizacion)
-      .subscribe({
-        next: () => {
-          this.resetForm();
-          this.load();
-        },
-        error: (err) => {
-          console.error(err);
-          this.errorMsg = 'No se ha podido crear el usuario.';
-        }
-      });
+    } else {
+
+      // CREATE: pasamos name, email, password, organization
+      this.api.createUsuario(name, email, password, organization)
+        .subscribe({
+          next: () => {
+            this.resetForm();
+            this.load();
+          },
+          error: (err) => {
+            console.error(err);
+            this.errorMsg = 'No se ha podido crear el usuario.';
+          }
+        });
+    }
   }
-}
 
-//Función: expandir fila para mostrar detalles
-toggleExpand(id: string): void {
-  this.expanded[id] = !this.expanded[id];
-}
+  //Función: expandir fila para mostrar detalles
+  toggleExpand(id: string): void {
+    this.expanded[id] = !this.expanded[id];
+  }
 
-//Función: confirmar eliminación de usuario
+  //Función: confirmar eliminación de usuario
   confirmDelete(id: string, name: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: name
@@ -189,27 +189,27 @@ toggleExpand(id: string): void {
   }
 
   //Función: editar usuario (muestra el formulario con los datos cargados)
-editar(user: Usuario): void {
-  this.mostrarForm = true;
-  this.editando = true;
-  this.usuarioEditId = user._id;
+  editar(user: Usuario): void {
+    this.mostrarForm = true;
+    this.editando = true;
+    this.usuarioEditId = user._id;
 
-  this.usuarioForm.patchValue({
-    name: user.name,
-    organizacion: typeof user.organizacion === 'string'
-      ? user.organizacion
-      : (user.organizacion as Organizacion)?._id
-  });
-}
-//Función: resetear formulario
-resetForm(): void {
-  this.mostrarForm = false;
-  this.editando = false;
-  this.usuarioEditId = null;
-  this.usuarioForm.reset();
-}
+    this.usuarioForm.patchValue({
+      name: user.name,
+      organization: typeof user.organization === 'string'
+        ? user.organization
+        : (user.organization as Organizacion)?._id
+    });
+  }
+  //Función: resetear formulario
+  resetForm(): void {
+    this.mostrarForm = false;
+    this.editando = false;
+    this.usuarioEditId = null;
+    this.usuarioForm.reset();
+  }
 
-//Función: eliminar usuario
+  //Función: eliminar usuario
   delete(id: string): void {
     this.errorMsg = '';
     this.loading = true;

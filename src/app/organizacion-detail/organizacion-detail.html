@@ -1,0 +1,38 @@
+<div class="container">
+  @if (loading()) {
+  <p>Cargando detalles...</p>
+  } @else if (organizacion(); as org) {
+  <h2>Detalles de: {{ org.name }}</h2>
+  <p class="muted">ID: {{ org._id }}</p>
+
+  <div class="section">
+    <h3>Usuarios Vinculados</h3>
+    <ul class="list">
+      @for (user of org.users; track user._id) {
+      <li class="card">
+        <span>{{ user.name }} ({{ user.email }})</span>
+        <button class="btn delete-btn" (click)="removeUserFromOrg(user._id)">Retirar</button>
+      </li>
+      } @empty {
+      <p>No hay usuarios vinculados a esta organización.</p>
+      }
+    </ul>
+  </div>
+
+  <div class="section">
+    <h3>Añadir Usuario a la Organización</h3>
+    <div class="user-selector">
+      @for (user of allUsuarios(); track user._id) {
+      <button class="btn" (click)="addUserToOrg(user)">
+        + {{ user.name }}
+      </button>
+      }
+    </div>
+  </div>
+
+  } @else {
+  <p>No se encontró la organización.</p>
+  }
+
+  <button class="btn" routerLink="/">Volver a la lista</button>
+</div>
